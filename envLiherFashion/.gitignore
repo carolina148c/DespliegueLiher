@@ -1,0 +1,66 @@
+# ==========================
+# ARCHIVOS SENSIBLES
+# ==========================
+.env
+*.key
+*.pem
+*.json
+
+# ==========================
+# ENTORNOS VIRTUALES
+# ==========================
+venv/
+env/
+ENV/
+.venv/
+Scripts/
+__pycache__/
+
+# ==========================
+# ARCHIVOS TEMPORALES DE PYTHON
+# ==========================
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.pdb
+*.log
+*.pot
+*.pyc
+
+# ==========================
+# CONFIGURACIONES DEL SISTEMA
+# ==========================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.sqlite3
+
+# ==========================
+# ARCHIVOS DE COMPILACIÓN Y CACHÉ
+# ==========================
+build/
+dist/
+*.egg-info/
+.eggs/
+*.manifest
+*.spec
+
+# ==========================
+# ARCHIVOS ESTÁTICOS Y MEDIOS (GENERADOS)
+# ==========================
+staticfiles/
+media/
+
+# ==========================
+# MIGRACIONES COMPILADAS (opcional)
+# ==========================
+*/migrations/__pycache__/
+*/migrations/*.pyc
+
+# ==========================
+# ARCHIVOS DE RENDER / DESPLIEGUE
+# ==========================
+*.tar.gz
+*.zip
