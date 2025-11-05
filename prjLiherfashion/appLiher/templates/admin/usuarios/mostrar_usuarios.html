@@ -1,0 +1,127 @@
+{% extends 'admin/includes/base_admin.html' %}
+{% load static %}
+
+{% block title %}Lista de Usuarios{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/secciones_admin.css' %}">
+<link rel="stylesheet" href="{% static 'css/crear_usuario.css' %}">
+{% endblock %}
+
+{% block header_title %}USUARIOS{% endblock %}
+
+{% block main_content %}
+<div class="container">
+
+    <!-- Estadísticas de usuarios -->
+    <div class="header">
+        <div class="stats">
+            <div class="stat-item stat-total">
+                <div class="stat-number">{{ usuarios|length }}</div>
+                <div class="stat-label">Total de usuarios</div>
+            </div>
+            <div class="stat-item stat-active">
+                <div class="stat-number">{{ usuarios_activos }}</div>
+                <div class="stat-label">Usuarios activos</div>
+            </div>
+            <div class="stat-item stat-inactive">
+                <div class="stat-number">{{ usuarios_inactivos }}</div>
+                <div class="stat-label">Usuarios inactivos</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensajes del sistema -->
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <!-- Controles de búsqueda y filtros -->
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Buscar por nombre o correo">
+        <select id="statusFilter">
+            <option value="">Todos los estados</option>
+            <option value="active">Activos</option>
+            <option value="inactive">Inactivos</option>
+        </select>
+        <select id="roleFilter">
+            <option value="">Todos los roles</option>
+            <option value="Administrador">Administrador</option>
+            <option value="Usuario">Usuario</option>
+        </select>
+        <button type="button" class="btn-add" onclick="openModal('createUserModal')">Agregar Usuario</button>
+    </div>
+
+    <!-- Tabla de usuarios -->
+    <div class="table-container">
+        {% if usuarios %}
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo electrónico</th>
+                    <th>Teléfono</th>
+                    <th>Rol</th>
+                    <th>Último acceso</th>
+                    <th>Estado</th>
+                    <th>Fecha de creación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                {% for usuario in usuarios %}
+                <tr data-status="{% if usuario.is_active %}active{% else %}inactive{% endif %}"
+                    data-role="{% if usuario.is_staff %}Administrador{% else %}Usuario{% endif %}">
+                    <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td>{{ usuario.phone|default:"-" }}</td>
+                    <td>
+                        <span class="role-badge {% if usuario.is_staff %}role-admin{% else %}role-usuario{% endif %}">
+                            {% if usuario.is_staff %}Administrador{% else %}Usuario{% endif %}
+                        </span>
+                    </td>
+                    <td>{{ usuario.last_login|date:"d/m/Y H:i"|default:"Nunca" }}</td>
+                    <td>
+                        <label class="switch">
+                            <input type="checkbox" class="toggle-status" data-id="{{ usuario.id }}" {% if usuario.is_active %}checked{% endif %}>
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="status-text {% if usuario.is_active %}active-text{% else %}inactive-text{% endif %}">
+                            {% if usuario.is_active %}Activo{% else %}Inactivo{% endif %}
+                        </span>
+                    </td>
+                    <td>{{ usuario.date_joined|date:"d/m/Y" }}</td>
+                    <td>
+                        <button type="button" onclick="verUsuario({{ usuario.id }})" class="btn-view">Ver</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <h3>No hay usuarios registrados</h3>
+            <p>Comienza agregando tu primer usuario al sistema</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- Modales -->
+{% include 'admin/usuarios/crear_usuario.html' %}
+{% include 'admin/usuarios/editar_usuario.html' %}
+{% include 'admin/usuarios/ver_usuario.html' %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.REGISTRO_URL = "{% url 'registro_ajax' %}";
+</script>
+<script src="{% static 'js/usuarios.js' %}"></script>
+{% endblock %}
